@@ -1,14 +1,14 @@
 // @flow
 import { createGlobalStyle } from 'styled-components'
 
-createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400');
+import "normalize.css"
+
+export const GlobalStyles = createGlobalStyle`
 
   * {
     box-sizing: border-box;
-    margin:0;
-    padding:0;
     font-weight: 400;
+    margin:0;
   }
 
   html, body, #root {
@@ -32,7 +32,11 @@ createGlobalStyle`
     list-style-type:none;
   }
 
-  h1 {
+  pre {
+    font-family: inherit;
+  }
+
+  /* h1 {
     font-size: 56px;
   }
   h2 {
@@ -56,5 +60,5 @@ createGlobalStyle`
 
   b {
     font-weight: bold;
-  }
+  } */
 `;

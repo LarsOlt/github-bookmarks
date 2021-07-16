@@ -1,8 +1,21 @@
-// @flow
-import { createStore } from 'redux'
-import { middleware } from './middleware'
-import { rootReducer } from './reducers'
+import { combineReducers, configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 
-export const store = createStore(rootReducer, middleware)
+import { error } from "./middleware";
+import { listsReducer } from "./entities/lists"
+import { cardsReducer } from "./entities/cards";
 
-window.store = store
+const rootReducer = combineReducers({
+  entities: combineReducers({
+    lists: listsReducer,
+    cards: cardsReducer
+  })
+})
+
+
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: [
+    ...getDefaultMiddleware(),
+    error
+  ]
+})
