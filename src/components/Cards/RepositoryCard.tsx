@@ -1,34 +1,58 @@
 import styled from "styled-components";
 import ClampLines from "react-clamp-lines";
+import moment from "moment";
+import React from "react";
+import type { GithubRepository } from "../../utils/github-api";
 
+import { onToggletToList} from "../Header"
 
-interface props {
+interface base {
+  githubData: GithubRepository;
   variant: "SearchResult" | "ListItem";
 }
+
+interface SearchResult extends base {
+  variant: "SearchResult";
+  toggleToList?: onToggletToList
+  lists?: {
+    title: string;
+    id: string;
+  }[];
+}
+
+interface ListItem extends base {
+  variant: "ListItem";
+  removeFromList?: () => void;
+}
+
+type props = SearchResult | ListItem;
 
 const Styles = styled.div`
   display: flex;
   border-top: 1px solid lightgray;
   padding: 0.75rem;
+  background-color: white;
 
   > .col-logo {
-    margin-right: 0.75rem;
+    margin-right: 1.2em;
 
-    > img.logo {
-      height: 3.5rem;
-      width: 3.5rem;
-      border-radius: 50%;
-      object-fit: cover;
+    > a {
+      img.logo {
+        height: 3em;
+        width: 3em;
+        border-radius: 50%;
+        object-fit: cover;
+      }
     }
   }
 
   > .col-main {
-    /* max-width: 400px; */
+    margin-right: 1em;
 
     > .title {
       font-size: 20px;
       color: #0366d6;
-      margin: 0.5em 0;
+      margin-bottom: 0.5em;
     }
 
     > .description {
@@ -44,7 +68,7 @@ const Styles = styled.div`
 
     > .stats {
       justify-self: flex-end;
-      height: 1.5rem;
+      height: 1em;
       display: flex;
       overflow: hidden;
       padding: 0;
@@ -59,9 +83,8 @@ const Styles = styled.div`
         white-space: nowrap;
 
         > img {
-          height: 100%;
+          height: 80%;
           margin-right: 0.5em;
-          padding: 0.2em 0;
         }
       }
     }
@@ -70,66 +93,122 @@ const Styles = styled.div`
     margin-left: auto;
     display: flex;
     flex-direction: column;
-    width: 1.7rem;
+    width: 1.5rem;
     flex-shrink: 0;
+    position: relative;
     /* justify-content: ${(p: props) =>
       p.variant === "SearchResult" ? "center" : "flex-start"}; */
 
-    > * {
+    > img {
       width: 100%;
       cursor: pointer;
+    }
+
+    > .popup {
+      --bg-color: hsl(0, 0%, 90%);
+      position: absolute;
+      left: 50px;
+      top: 50%;
+      transform: translateY(-50%) scale(0);
+      background-color: var(--bg-color);
+      border-radius: 0.5em;
+      transition: transform 150ms ease;
+      box-shadow: 1px 1px 5px hsl(0, 0%, 70%);
+      padding: 0.75em 1em;
+
+      > p {
+        white-space: nowrap;
+        margin-bottom: 0.5em;
+        color: hsl(0, 0%, 40%);
+      }
+
+      > .checkboxes {
+        white-space: nowrap;
+        > div {
+          margin: 0.2em 0;
+          display: flex;
+          align-items: center;
+
+          > input {
+            margin-right: 0.5em;
+          }
+          > label {
+            /* color: gray; */
+          }
+        }
+      }
+
+      &.show {
+        transform: translateY(-50%) scale(1);
+      }
+
+      &::after {
+        --size: 1em;
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: calc(-1 * var(--size));
+        transform: translateY(-50%);
+        border-style: solid;
+        border-width: var(--size) var(--size) var(--size) 0;
+        border-color: transparent var(--bg-color) transparent transparent;
+      }
     }
 
     ${(p: props) =>
       p.variant === "SearchResult" &&
       `
       justify-content: center;
-      margin-left: 20%;
       margin-right: 1em;
     `}
-
-    /* > .removeFromList-btn {
-    }
-
-    > .addToList-btn {
-    } */
   }
 `;
 
 export const RepositoryCard: React.FC<props> = (props) => {
-  const descriptionText =
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores, id repudiandae et neque obcaecati voluptatibus unde deserunt possimus corporis tempore? Quam fugit alias repudiandae, tempore beatae eos atque praesentium ut eligendi at itaque, aliquid vero. Iusto illo odit, laborum similique nobis repudiandae accusamus, ex explicabo sit fugiat tempora quae, odio cupiditate dolores optio aperiam soluta! Fugiat deserunt sunt obcaecati, quasi eos accusantium molestias, suscipit blanditiis aut ab maxime. Error quod enim pariatur eum quae repellendus voluptatem illum itaque repudiandae aperiam! Natus ut cum, ipsam asperiores dolore accusamus aut, officiis voluptates alias repellat perspiciatis! Maxime nostrum animi deserunt earum voluptatibus eveniet.";
+  const [popupOpen, setPopupOpen] = React.useState(false);
+
+  const dividedRepoName = (() => {
+    const [owner, repo] = props.githubData.full_name.split("/");
+
+    return {
+      owner,
+      repo,
+    };
+  })();
 
   return (
     <Styles {...props}>
       {/* logo */}
       <div className="col-logo">
-        <img
-          className="logo"
-          src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
-          alt=""
-        />
+        <a href={props.githubData.owner.html_url} rel="noreferrer" target="_blank">
+          <img className="logo" src={props.githubData.owner.avatar_url} alt="" />
+        </a>
       </div>
 
       {/* main */}
       <div className="col-main">
         <h2 className="title">
-          facebook/<b>react</b>
+          <a href={props.githubData.html_url} rel="noreferrer" target="_blank">
+            {dividedRepoName.owner}/<b>{dividedRepoName.repo}</b>
+          </a>
         </h2>
-        <ClampLines
-          id=""
-          text={descriptionText}
-          lines={props.variant === "ListItem" ? 4 : 2}
-          buttons={false}
-          className="description"
-        />
+        {props.githubData.description && (
+          <ClampLines
+            id=""
+            text={props.githubData.description}
+            lines={props.variant === "ListItem" ? 4 : 2}
+            buttons={false}
+            className="description"
+          />
+        )}
+
         <ul className="stats">
           <li>
             <img src={process.env.PUBLIC_URL + "/icons/star.svg"} alt="star icon" />
-            {500}
+            {props.githubData.stargazers_count}
           </li>
-          <li>{1} issue</li>
-          <li>updated {16} days ago</li>
+          <li>{props.githubData.open_issues} issue</li>
+          <li>updated {moment(props.githubData.updated_at).fromNow()}</li>
         </ul>
       </div>
 
@@ -140,6 +219,7 @@ export const RepositoryCard: React.FC<props> = (props) => {
             src={process.env.PUBLIC_URL + "/icons/close.svg"}
             alt="remove from list"
             className="removeFromList-btn"
+            onClick={() => props.removeFromList?.()}
           />
         )}
         {props.variant === "SearchResult" && (
@@ -147,8 +227,40 @@ export const RepositoryCard: React.FC<props> = (props) => {
             src={process.env.PUBLIC_URL + "/icons/plus.svg"}
             alt="add to list"
             className="addToList-btn-btn"
+            onClick={() => {
+              setPopupOpen(!popupOpen);
+              //props.addToList?.(props.githubData)
+            }}
           />
         )}
+
+        <div className={`popup ${popupOpen ? "show" : ""}`}>
+          {props.variant === "SearchResult" && (
+            <>
+              {!!props.lists?.length && <p>Add to</p>}
+              <div className="checkboxes">
+                {props.lists?.map(({ id, title }) => (
+                  <div key={id}>
+                    <input
+                      type="checkbox"
+                      name={title}
+                      onChange={(e) => {
+                        props.toggleToList?.({
+                          githubData: props.githubData,
+                          listId: id,
+                          shouldRemove: !e.target.checked,
+                        });
+                      }}
+                    ></input>
+                    <label>{title}</label>
+                  </div>
+                ))}
+
+                {!props.lists?.length && <p>Please create a list first</p>}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </Styles>
   );
