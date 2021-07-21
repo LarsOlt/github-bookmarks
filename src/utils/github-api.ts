@@ -1,13 +1,26 @@
 import axios, { AxiosResponse } from "axios";
 
+export interface GithubRepository {
+  id: number;
+  [key: string]: any;
+}
+
+export interface GithubRepositorySearchResponse {
+  total_count: number;
+  incomplete_results: boolean;
+  items: GithubRepository[];
+}
+
+interface SearchRepositoriesResponse extends AxiosResponse {
+  rateLimitReached: boolean;
+}
+
 class GithubAPIClass {
   private axios = axios.create({
     baseURL: "https://api.github.com",
   });
 
-  searchRepositories = async (options: {
-    query: string
-  }): Promise<AxiosResponse> => {
+  searchRepositories = async (options: { query: string }): Promise<SearchRepositoriesResponse> => {
     try {
       const res = await this.axios.get("/search/repositories", {
         params: {
@@ -15,9 +28,17 @@ class GithubAPIClass {
         },
       });
 
-      return res
+      return {
+        ...res,
+        rateLimitReached: false,
+      };
     } catch (error) {
-      return error.response
+      const rateLimitReached = error.response.status === 403;
+
+      return {
+        ...error.response,
+        rateLimitReached,
+      };
     }
   };
 }
