@@ -9,6 +9,7 @@ export const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
     font-weight: 400;
     margin:0;
+    font-family: 'Roboto', sans-serif;
   }
 
   html, body, #root {
@@ -16,9 +17,8 @@ export const GlobalStyles = createGlobalStyle`
     height: 100%;
     margin: 0;
     font-weight: 300;
-    font-family: 'Roboto', sans-serif;
   }
-
+  
   form {
     margin: 0;
   }
@@ -34,6 +34,11 @@ export const GlobalStyles = createGlobalStyle`
 
   pre {
     font-family: inherit;
+  }
+
+  a {
+    text-decoration: none;
+    color: unset;
   }
 
   /* h1 {
