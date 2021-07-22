@@ -19,7 +19,7 @@ function App() {
           <DndProvider backend={HTML5Backend}>
             <Switch>
               <Route exact path="/" component={Home} />
-              <Redirect to="/" />
+              <Route component={() => <Redirect to="/" />} />
             </Switch>
           </DndProvider>
         </PersistGate>
