@@ -1,6 +1,6 @@
 # Test project for my job interview at [Incognito](https://www.incoqnito.io/)
 
-## App specification provided by Incognito
+### App specification provided by Incognito
 
 ### Usage
 
