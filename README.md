@@ -1,6 +1,5 @@
 ## Test project for my job interview at [Incognito](https://www.incoqnito.io/)
 
-
 ![Screenshot of the main page](screenshots/lists.png)
 
 ### App specification provided by Incognito
