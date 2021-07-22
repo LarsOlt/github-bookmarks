@@ -29,9 +29,9 @@ In github you can star repositories you like and you want to view later. The sta
 - The repositories are stored in local storage
 
 ### Acceptance criteria 
-- should work in chrome, when you get it in IE11 your king :D
+- Should work in chrome
 
 ### Additional Features
 - Your search will consider repositories and peoples/organisations
-- you can delete entries
-- when you scroll in a list the heading of the list will be docked on top
+- You can delete entries
+- When you scroll in a list the heading of the list will be docked on top
