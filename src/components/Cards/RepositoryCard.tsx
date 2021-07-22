@@ -4,7 +4,7 @@ import moment from "moment";
 import React from "react";
 import type { GithubRepository } from "../../utils/github-api";
 
-import { onToggletToList} from "../Header"
+import { onToggletToList } from "../Header";
 
 interface base {
   githubData: GithubRepository;
@@ -13,16 +13,18 @@ interface base {
 
 interface SearchResult extends base {
   variant: "SearchResult";
-  toggleToList?: onToggletToList
-  lists?: {
+  toggleToList?: onToggletToList;
+  lists: {
     title: string;
     id: string;
+    cardIds: string[];
   }[];
 }
 
 interface ListItem extends base {
   variant: "ListItem";
   removeFromList?: () => void;
+  ref: any;
 }
 
 type props = SearchResult | ListItem;
@@ -99,9 +101,27 @@ const Styles = styled.div`
     /* justify-content: ${(p: props) =>
       p.variant === "SearchResult" ? "center" : "flex-start"}; */
 
+    > .listsCount {
+      white-space: nowrap;
+      padding: 0.2em 0.5em;
+      background-color: #277cdd;
+      box-shadow: 1px 1px 5px grey;
+      border-radius: 5px;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      font-weight: bold;
+      position: absolute;
+      top: 0;
+      right: 5em;
+    }
+
     > img {
       width: 100%;
       cursor: pointer;
+      position: relative;
     }
 
     > .popup {
@@ -164,8 +184,18 @@ const Styles = styled.div`
   }
 `;
 
-export const RepositoryCard: React.FC<props> = (props) => {
+export const RepositoryCard = React.forwardRef<HTMLDivElement, props>((props, ref) => {
   const [popupOpen, setPopupOpen] = React.useState(false);
+
+  const cardId = props.githubData.id.toString();
+
+  let amountOfListsAssignedTo = 0;
+
+  if (props.variant === "SearchResult") {
+    const filtered = props.lists.filter(({ cardIds }) => cardIds.includes(cardId));
+
+    amountOfListsAssignedTo = filtered.length;
+  }
 
   const dividedRepoName = (() => {
     const [owner, repo] = props.githubData.full_name.split("/");
@@ -177,7 +207,7 @@ export const RepositoryCard: React.FC<props> = (props) => {
   })();
 
   return (
-    <Styles {...props}>
+    <Styles {...props} ref={ref}>
       {/* logo */}
       <div className="col-logo">
         <a href={props.githubData.owner.html_url} rel="noreferrer" target="_blank">
@@ -223,15 +253,19 @@ export const RepositoryCard: React.FC<props> = (props) => {
           />
         )}
         {props.variant === "SearchResult" && (
-          <img
-            src={process.env.PUBLIC_URL + "/icons/plus.svg"}
-            alt="add to list"
-            className="addToList-btn-btn"
-            onClick={() => {
-              setPopupOpen(!popupOpen);
-              //props.addToList?.(props.githubData)
-            }}
-          />
+          <>
+            <img
+              src={process.env.PUBLIC_URL + "/icons/plus.svg"}
+              alt="add to list"
+              className="addToList-btn-btn"
+              onClick={() => {
+                setPopupOpen(!popupOpen);
+              }}
+            ></img>
+            {!!amountOfListsAssignedTo && (
+              <span className="listsCount">In {amountOfListsAssignedTo} {amountOfListsAssignedTo === 1 ? "list" : "lists"}</span>
+            )}
+          </>
         )}
 
         <div className={`popup ${popupOpen ? "show" : ""}`}>
@@ -239,22 +273,27 @@ export const RepositoryCard: React.FC<props> = (props) => {
             <>
               {!!props.lists?.length && <p>Add to</p>}
               <div className="checkboxes">
-                {props.lists?.map(({ id, title }) => (
-                  <div key={id}>
-                    <input
-                      type="checkbox"
-                      name={title}
-                      onChange={(e) => {
-                        props.toggleToList?.({
-                          githubData: props.githubData,
-                          listId: id,
-                          shouldRemove: !e.target.checked,
-                        });
-                      }}
-                    ></input>
-                    <label>{title}</label>
-                  </div>
-                ))}
+                {props.lists?.map(({ id, title, cardIds }) => {
+                  const isAlreadyInList = cardIds.includes(cardId);
+
+                  return (
+                    <div key={id}>
+                      <input
+                        defaultChecked={isAlreadyInList}
+                        type="checkbox"
+                        name={title}
+                        onChange={(e) => {
+                          props.toggleToList?.({
+                            githubData: props.githubData,
+                            listId: id,
+                            shouldRemove: !e.target.checked,
+                          });
+                        }}
+                      ></input>
+                      <label>{title}</label>
+                    </div>
+                  );
+                })}
 
                 {!props.lists?.length && <p>Please create a list first</p>}
               </div>
@@ -264,4 +303,4 @@ export const RepositoryCard: React.FC<props> = (props) => {
       </div>
     </Styles>
   );
-};
+});
