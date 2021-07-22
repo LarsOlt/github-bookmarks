@@ -237,7 +237,7 @@ export const RepositoryCard = React.forwardRef<HTMLDivElement, props>((props, re
             <img src={process.env.PUBLIC_URL + "/icons/star.svg"} alt="star icon" />
             {props.githubData.stargazers_count}
           </li>
-          <li>{props.githubData.open_issues} issue</li>
+          <li>{props.githubData.open_issues} issues</li>
           <li>updated {moment(props.githubData.updated_at).fromNow()}</li>
         </ul>
       </div>
