@@ -7,6 +7,8 @@ import { GlobalStyles } from "./global-styles";
 
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor } from "./redux/store";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 function App() {
   return (
@@ -14,10 +16,12 @@ function App() {
       <GlobalStyles />
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Redirect to="/" />
-          </Switch>
+          <DndProvider backend={HTML5Backend}>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Redirect to="/" />
+            </Switch>
+          </DndProvider>
         </PersistGate>
       </Provider>
     </Router>

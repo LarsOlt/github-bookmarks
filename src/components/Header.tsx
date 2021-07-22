@@ -131,6 +131,7 @@ export const Header: React.FC = () => {
     return ids.map((id) => ({
       id,
       title: state.entities.lists.byId[id].title,
+      cardIds: state.entities.lists.byId[id].cardIds
     }));
   });
 
