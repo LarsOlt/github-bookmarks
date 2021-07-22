@@ -1,4 +1,3 @@
-
 # app specification
 
 ## Usage
@@ -17,13 +16,9 @@ You can use any additonal library you want
 
 The design is provided at specs/
 
-Design is created with Adobe XD. The export is a lil bit blury.
-
 ##  Usecase
 
-In github you can star repositories you like and you want to view later. The star process is very idiomatic and you cannot group your starred repositories.
-
-The application should group repositories by categories in self created lists.
+In github you can star repositories you like and you want to view later. The star process is very idiomatic and you cannot group your starred repositories. The application should group repositories by categories in self created lists.
 
 ## Features
 - You can search for repositories and add them to a global list
@@ -38,7 +33,3 @@ The application should group repositories by categories in self created lists.
 - Your search will consider repositories and peoples/organisations
 - you can delete entries
 - when you scroll in a list the heading of the list will be docked on top
-
-# Development
-
-```npm run development```
