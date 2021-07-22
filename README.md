@@ -16,7 +16,7 @@ You can use any additonal library you want
 
 ### Design
 
-The design is provided at specs/
+The design is provided in the [specs](specs) folder
 
 ###  Usecase
 
