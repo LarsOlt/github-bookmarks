@@ -30,13 +30,8 @@ type State = {
 
 const initialState: State = {
   byId: {
-    "1": {
-      id: "1",
-      title: "Default",
-      cardIds: [],
-    },
   },
-  allIds: ["1"],
+  allIds: [],
 };
 
 const lists = createSlice({
@@ -68,6 +63,11 @@ const lists = createSlice({
       // remove from allIds array
       state.allIds.splice(state.allIds.indexOf(id), 1);
     },
+    changeCardsOrder: (state, action: PayloadAction<{ cardIds: string[]; listId: string }>) => {
+      const { cardIds, listId } = action.payload;
+
+      state.byId[listId].cardIds = cardIds;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -89,11 +89,12 @@ const lists = createSlice({
       })
 
       .addCase(removeFromList, (state, action) => {
+        console.log(action.payload);
         const { id, listId } = action.payload;
 
         const list = state.byId[listId];
 
-        list.cardIds.splice(list.cardIds.indexOf(id), 1)
+        list.cardIds.splice(list.cardIds.indexOf(id), 1);
       });
   },
 });
@@ -101,6 +102,7 @@ const lists = createSlice({
 export const createList = lists.actions.create;
 export const renameList = lists.actions.rename;
 export const deleteList = lists.actions.delete;
+export const changeListCardsOrder = lists.actions.changeCardsOrder;
 
 //export const listsActions = lists.actions;
 export const listsReducer = lists.reducer;
