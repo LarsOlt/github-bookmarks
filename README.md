@@ -28,7 +28,7 @@ In github you can star repositories you like and you want to view later. The sta
 - You can move repositories around to another lists
 - The repositories are stored in local storage
 
-## Acceptance criteria 
+### Acceptance criteria 
 - should work in chrome, when you get it in IE11 your king :D
 
 ### Additional Features
