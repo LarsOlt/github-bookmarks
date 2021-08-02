@@ -3,7 +3,7 @@ import { Form, Field } from "react-final-form";
 import { useState, useRef } from "react";
 
 import { RepositoryCard } from "./Cards/RepositoryCard";
-import { GithubAPI } from "../utils/github-api";
+import { searchRepositories } from "../utils/github-api";
 import { useClickLocator } from "../hooks/useClickLocator";
 import type { GithubRepository, GithubRepositorySearchResponse } from "../utils/github-api";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
@@ -103,7 +103,7 @@ export const Header: React.FC = () => {
   const onFormSubmit = (data: { search: string }) => {
     setLoadingSearchResults(true);
 
-    GithubAPI.searchRepositories({ query: data.search }).then((res) => {
+    searchRepositories({ query: data.search }).then((res) => {
       setLoadingSearchResults(false);
 
       setGithubRateLimitReached(res.rateLimitReached);

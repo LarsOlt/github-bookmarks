@@ -15,32 +15,30 @@ interface SearchRepositoriesResponse extends AxiosResponse {
   rateLimitReached: boolean;
 }
 
-class GithubAPIClass {
-  private axios = axios.create({
-    baseURL: "https://api.github.com",
-  });
+const api = axios.create({
+  baseURL: "https://api.github.com",
+});
 
-  searchRepositories = async (options: { query: string }): Promise<SearchRepositoriesResponse> => {
-    try {
-      const res = await this.axios.get("/search/repositories", {
-        params: {
-          q: options.query,
-        },
-      });
+export const searchRepositories = async (options: {
+  query: string;
+}): Promise<SearchRepositoriesResponse> => {
+  try {
+    const res = await api.get("/search/repositories", {
+      params: {
+        q: options.query,
+      },
+    });
 
-      return {
-        ...res,
-        rateLimitReached: false,
-      };
-    } catch (error) {
-      const rateLimitReached = error.response.status === 403;
+    return {
+      ...res,
+      rateLimitReached: false,
+    };
+  } catch (error) {
+    const rateLimitReached = error.response.status === 403;
 
-      return {
-        ...error.response,
-        rateLimitReached,
-      };
-    }
-  };
-}
-
-export const GithubAPI = new GithubAPIClass();
+    return {
+      ...error.response,
+      rateLimitReached,
+    };
+  }
+};
