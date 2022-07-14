@@ -98,8 +98,6 @@ const Styles = styled.div`
     width: 1.5rem;
     flex-shrink: 0;
     position: relative;
-    /* justify-content: ${(p: props) =>
-      p.variant === "SearchResult" ? "center" : "flex-start"}; */
 
     > .listsCount {
       white-space: nowrap;
